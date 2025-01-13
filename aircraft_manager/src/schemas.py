@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, computed_field
 from sqlalchemy.util.preloaded import orm_attributes
 
 # Internal imports
-from API.models import AircraftType
+from aircraft_manager.src.models import AircraftType
 
 
 # Aircraft Data class schemas

@@ -8,9 +8,9 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 
 # Internal imports
-from API.utils.init_db import create_tables
-from API.router.api import router as router_aircraft
-from API.config.database import connection
+from aircraft_manager.src.utils.init_db import create_tables
+from aircraft_manager.src.router.api import router as router_aircraft
+from aircraft_manager.src.config.database import connection
 
 
 load_dotenv()

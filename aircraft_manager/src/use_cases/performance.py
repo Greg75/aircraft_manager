@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from time import gmtime, strftime
 
 # Internal imports
-from API.models import Aircraft, AircraftData
-from API.schemas import (InputAircraftPerformanceRangeSchema, OutputAircraftPerformanceRangeSchema,
+from aircraft_manager.src.models import Aircraft, AircraftData
+from aircraft_manager.src.schemas import (InputAircraftPerformanceRangeSchema, OutputAircraftPerformanceRangeSchema,
                          InputAircraftPerformanceEnduranceSchema, OutputAircraftPerformanceEnduranceSchema)
 
 

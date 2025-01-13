@@ -5,8 +5,8 @@ from sqlalchemy.exc import NoResultFound, IntegrityError
 from typing import List, Dict
 
 # Internal imports
-from API.schemas import AircraftBaseSchema, AircraftUpdateSchema, AircraftDisplaySchema, AircraftDataUpdateSchema
-from API.models import Aircraft, AircraftData
+from aircraft_manager.src.schemas import AircraftBaseSchema, AircraftUpdateSchema, AircraftDisplaySchema, AircraftDataUpdateSchema
+from aircraft_manager.src.models import Aircraft, AircraftData
 
 
 logger = logging.getLogger(__name__)

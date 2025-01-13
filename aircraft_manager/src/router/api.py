@@ -3,12 +3,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 # Internal imports
-from API.config.database import get_db
-from API.schemas import (AircraftBaseSchema, AircraftUpdateSchema, AircraftDisplaySchema,
+from aircraft_manager.src.config.database import get_db
+from aircraft_manager.src.schemas import (AircraftBaseSchema, AircraftUpdateSchema, AircraftDisplaySchema,
                          InputAircraftPerformanceRangeSchema, OutputAircraftPerformanceRangeSchema,
                          InputAircraftPerformanceEnduranceSchema, OutputAircraftPerformanceEnduranceSchema)
-from API.repository import AircraftRepository
-from API.use_cases.performance import Performance
+from aircraft_manager.src.repository import AircraftRepository
+from aircraft_manager.src.use_cases.performance import Performance
 
 router = APIRouter(prefix="/aircrafts")
 

@@ -1,6 +1,6 @@
 # Internal imports
-from API.config.database import engine
-from API.models import Base
+from aircraft_manager.src.config.database import engine
+from aircraft_manager.src.models import Base
 
 
 def create_tables():

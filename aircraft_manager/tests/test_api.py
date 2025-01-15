@@ -3,9 +3,9 @@ import asyncio
 from fastapi.testclient import TestClient
 
 # Internal imports
-from API.models import Aircraft
-from API.tests.conftest import db_session, load_data, new_aircraft_fixture
-from API.repository import AircraftRepository
+from aircraft_manager.src.models import Aircraft
+from aircraft_manager.tests.conftest import db_session, load_data, new_aircraft_fixture
+from aircraft_manager.src.repository import AircraftRepository
 
 
 def test_health_check(client: TestClient):
@@ -20,7 +20,7 @@ def test_health_check(client: TestClient):
     response = client.get("/health")
 
     assert response.status_code == 200
-    assert response.json() == {"status": "OK"}
+    assert response.json() == {"status": "HEALTHY", "database": "OK"}
 
 
 def test_show_aircrafts(client: TestClient, load_data, db_session):
@@ -63,6 +63,7 @@ def test_input_aircraft(client: TestClient, db_session, new_aircraft_fixture):
     assert response.status_code == 201
 
     data = response.json()
+    assert data["aircraft_id"] == 101
     assert data["name"] == "C-172"
     assert data["aircraft_data"]["fuel_consumption"] == 18
 
@@ -106,7 +107,7 @@ def test_modify_aircraft_2(client: TestClient, load_data, db_session):
         modify_aircraft() -> AircraftUpdateSchema(aircraft_id=100, name='C-100', aircraft_data{cruise_speed=190}).
     """
     aircraft_repo = AircraftRepository(db_session)
-    list_of_aircrafts = asyncio.run(aircraft_repo.display_aircrafts())
+    list_of_aircrafts = aircraft_repo.display_aircrafts()
     aircraft_to_update = list_of_aircrafts[0].model_dump()
 
     aircraft_id = aircraft_to_update["aircraft_id"]

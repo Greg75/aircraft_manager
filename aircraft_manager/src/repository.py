@@ -1,13 +1,15 @@
 # Third party imports
 import logging
+from sqlalchemy import select, exists
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import NoResultFound, IntegrityError
 from typing import List, Dict
 
 # Internal imports
-from aircraft_manager.src.schemas import AircraftBaseSchema, AircraftUpdateSchema, AircraftDisplaySchema, AircraftDataUpdateSchema
+from aircraft_manager.src.schemas import AircraftBaseSchema, AircraftUpdateSchema, AircraftDisplaySchema, \
+    AircraftDataUpdateSchema
 from aircraft_manager.src.models import Aircraft, AircraftData
-
+from aircraft_manager.tests.conftest import to_schema
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +31,7 @@ class AircraftRepository:
         delete_aircraft(aircraft_id: int) -> None:
             Deletes the aircraft with the given aircraft_id from the database.
     """
+
     def __init__(self, session: Session):
         """
         Initializes AircraftRepository class.
@@ -51,14 +54,14 @@ class AircraftRepository:
             or returns True otherwise.
         """
         try:
-            exists = self.session.query(Aircraft).filter_by(aircraft_id=aircraft_id).exists().scalar()
-            if not exists:
+            exist = select(exists().where(Aircraft.aircraft_id == aircraft_id))
+            result = self.session.execute(exist).scalar()
+            if not result:
                 logger.error(f"Aircraft with id {aircraft_id} not found.")
                 raise NoResultFound(f"Aircraft with id {aircraft_id} not found")
 
             logger.info(f"Aircraft with id {aircraft_id} found.")
             return True
-
         finally:
             self.session.close()
 
@@ -73,15 +76,16 @@ class AircraftRepository:
             Instance of the Aircraft class displayed according to AircraftDisplaySchema.
         """
         try:
-            with self.session.begin():
-                new_aircraft = Aircraft(**aircraft.model_dump(exclude={"aircraft_data"}))
-                new_aircraft_data = AircraftData(**aircraft.aircraft_data.model_dump(), aircraft=new_aircraft)
-                self.session.add(new_aircraft)
-                self.session.add(new_aircraft_data)
+            new_aircraft = Aircraft(**aircraft.model_dump(exclude={"aircraft_data"}))
+            new_aircraft_data = AircraftData(**aircraft.aircraft_data.model_dump(), aircraft=new_aircraft)
+            self.session.add_all([new_aircraft, new_aircraft_data])
+            self.session.commit()
 
             logger.info("Aircraft added successfully.")
+            added_aircraft = self.session.query(Aircraft).options(
+                joinedload(Aircraft.aircraft_data)).order_by(Aircraft.aircraft_id.desc()).first()
 
-            return AircraftDisplaySchema.model_validate(new_aircraft)
+            return AircraftDisplaySchema.model_validate(added_aircraft)
 
         except IntegrityError as e:
             self.session.rollback()
@@ -131,8 +135,7 @@ class AircraftRepository:
                         self.session.query(AircraftData).filter_by(
                             aircraft_id=aircraft_id).update(values={**ac_data_values})
 
-                updated_aircraft = (self.session.query(Aircraft).filter_by(
-                    aircraft_id=aircraft_id).options(joinedload(Aircraft.aircraft_data)).first())
+                updated_aircraft = {**ac_values, "aircraft_data": {**ac_data_values}}
                 logger.info(f"Aircraft with id {aircraft_id} updated successfully.")
 
                 return AircraftUpdateSchema.model_validate(updated_aircraft)

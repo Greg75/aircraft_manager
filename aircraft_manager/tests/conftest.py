@@ -7,8 +7,8 @@ from sqlalchemy import create_engine, StaticPool
 from sqlalchemy.orm import sessionmaker, Session
 
 # Internal imports
-from API.models import Base, Aircraft, AircraftData, AircraftType
-from API.schemas import AircraftBaseSchema, AircraftUpdateSchema
+from aircraft_manager.src.models import Base, Aircraft, AircraftData, AircraftType
+from aircraft_manager.src.schemas import AircraftBaseSchema, AircraftUpdateSchema, AircraftDisplaySchema
 
 DATABASE_URL = "sqlite://"
 
@@ -93,8 +93,8 @@ def app(override_get_db: Callable) -> FastAPI:
     Arguments:
         override_get_db {Callable} -- Function that returns database session object.
     """
-    from API.main import app
-    from API.config.database import get_db
+    from aircraft_manager.src.main import app
+    from aircraft_manager.src.config.database import get_db
 
     app.dependency_overrides[get_db] = override_get_db
 
@@ -131,7 +131,7 @@ def to_schema(aircraft: Aircraft) -> dict:
 
 
 @pytest.fixture
-def new_aircraft_fixture(create_aircraft) -> AircraftBaseSchema:
+def new_aircraft_fixture(create_aircraft) -> AircraftDisplaySchema:
     """
     Returns AircraftBaseSchema instance with sample data for testing.
 
@@ -141,8 +141,13 @@ def new_aircraft_fixture(create_aircraft) -> AircraftBaseSchema:
     Returns:
         AircraftBaseSchema -- Schema instance populated with sample aircraft data.
     """
-
-    aircraft_data = AircraftData(
+    aircraft = Aircraft(
+        aircraft_id=101,
+        name="C-172",
+        manufacturer="Cessna",
+        aircraft_type=AircraftType.Trainer,
+        first_flight="1972-08-16",
+        aircraft_data=AircraftData(
             aircraft_data_id=101,
             fuel_consumption=18,
             ceiling=3200,
@@ -152,16 +157,9 @@ def new_aircraft_fixture(create_aircraft) -> AircraftBaseSchema:
             max_speed=270,
             cruise_speed=210
         )
-
-    aircraft = Aircraft(
-        name="C-172",
-        manufacturer="Cessna",
-        aircraft_type=AircraftType.Trainer,
-        first_flight="1972-08-16",
-        aircraft_data=aircraft_data
     )
-
-    return AircraftBaseSchema(**to_schema(aircraft))
+    print(AircraftDisplaySchema(**to_schema(aircraft)))
+    return AircraftDisplaySchema(**to_schema(aircraft))
 
 
 @pytest.fixture
@@ -196,6 +194,7 @@ def update_aircraft() -> AircraftUpdateSchema:
 @pytest.fixture
 def create_aircraft(**kwargs) -> Aircraft:
     return Aircraft(
+        aircraft_id=kwargs.get("aircraft_id"),
         name=kwargs.get("name"),
         manufacturer=kwargs.get("manufacturer"),
         aircraft_type=kwargs.get("aircraft_type"),

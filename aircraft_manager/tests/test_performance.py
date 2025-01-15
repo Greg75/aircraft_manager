@@ -3,32 +3,32 @@ import pytest
 import asyncio
 
 # Internal imports
-from API.schemas import InputAircraftPerformanceRangeSchema, OutputAircraftPerformanceRangeSchema, \
+from aircraft_manager.src.schemas import InputAircraftPerformanceRangeSchema, OutputAircraftPerformanceRangeSchema, \
     InputAircraftPerformanceEnduranceSchema, OutputAircraftPerformanceEnduranceSchema
-from API.use_cases.performance import Performance
-from API.tests.conftest import load_data, db_session
+from aircraft_manager.src.use_cases.performance import Performance
+from aircraft_manager.tests.conftest import load_data, db_session
 
 
 class TestPerformance:
 
     @pytest.fixture
     def mock_input_aircraft_performance_range_schema(self, mocker):
-        return mocker.patch('API.schemas.InputAircraftPerformanceRangeSchema',
+        return mocker.patch('aircraft_manager.src.schemas.InputAircraftPerformanceRangeSchema',
                             InputAircraftPerformanceRangeSchema(aircraft_id=100, wind_speed=10.0, fuel=60.0))
 
     @pytest.fixture
     def mock_output_aircraft_performance_range_schema(self, mocker):
-        return mocker.patch('API.schemas.OutputAircraftPerformanceRangeSchema',
+        return mocker.patch('aircraft_manager.src.schemas.OutputAircraftPerformanceRangeSchema',
                             OutputAircraftPerformanceRangeSchema(name='C-152', range=800.0))
 
     @pytest.fixture
     def mock_input_aircraft_performance_endurance_schema(self, mocker):
-        return mocker.patch('API.schemas.InputAircraftPerformanceEnduranceSchema',
+        return mocker.patch('aircraft_manager.src.schemas.InputAircraftPerformanceEnduranceSchema',
                             InputAircraftPerformanceEnduranceSchema(aircraft_id=100, fuel=60.0))
 
     @pytest.fixture
     def mock_output_aircraft_performance_endurance_schema(self, mocker):
-        return mocker.patch('API.schemas.OutputAircraftPerformanceEnduranceSchema',
+        return mocker.patch('aircraft_manager.src.schemas.OutputAircraftPerformanceEnduranceSchema',
                             OutputAircraftPerformanceEnduranceSchema(name='C-152', endurance='04:00'))
 
     def test_calculate_range(self, mock_input_aircraft_performance_range_schema,

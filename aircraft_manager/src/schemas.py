@@ -1,7 +1,6 @@
 # Third party imports
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, computed_field
-from sqlalchemy.util.preloaded import orm_attributes
 
 # Internal imports
 from aircraft_manager.src.models import AircraftType
@@ -10,7 +9,7 @@ from aircraft_manager.src.models import AircraftType
 # Aircraft Data class schemas
 class AircraftDataBaseSchema(BaseModel):
     """Base AircraftData class schema with all obligatory fields."""
-    model_config = ConfigDict(from_attributes=True, orm_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
     fuel_consumption: float
     ceiling: float

@@ -5,7 +5,8 @@ from time import gmtime, strftime
 # Internal imports
 from aircraft_manager.src.models import Aircraft, AircraftData
 from aircraft_manager.src.schemas import (InputAircraftPerformanceRangeSchema, OutputAircraftPerformanceRangeSchema,
-                         InputAircraftPerformanceEnduranceSchema, OutputAircraftPerformanceEnduranceSchema)
+                                          InputAircraftPerformanceEnduranceSchema,
+                                          OutputAircraftPerformanceEnduranceSchema)
 
 
 class Performance:
@@ -18,6 +19,7 @@ class Performance:
         calculate_endurance(aircraft_id: int): calculates aircraft endurance
         based on weight and speed.
     """
+
     def __init__(self, session: Session) -> None:
         """Initializes Performance class.
 

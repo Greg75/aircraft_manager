@@ -5,8 +5,9 @@ from sqlalchemy.orm import Session
 # Internal imports
 from aircraft_manager.src.config.database import get_db
 from aircraft_manager.src.schemas import (AircraftBaseSchema, AircraftUpdateSchema, AircraftDisplaySchema,
-                         InputAircraftPerformanceRangeSchema, OutputAircraftPerformanceRangeSchema,
-                         InputAircraftPerformanceEnduranceSchema, OutputAircraftPerformanceEnduranceSchema)
+                                          InputAircraftPerformanceRangeSchema, OutputAircraftPerformanceRangeSchema,
+                                          InputAircraftPerformanceEnduranceSchema,
+                                          OutputAircraftPerformanceEnduranceSchema)
 from aircraft_manager.src.repository import AircraftRepository
 from aircraft_manager.src.use_cases.performance import Performance
 
